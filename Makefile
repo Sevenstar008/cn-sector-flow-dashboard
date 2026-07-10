@@ -30,4 +30,4 @@ build:
 	cd web && npm run build
 
 clean:
-	rm -f db/data.db db/data.db-wal db/data.db-shm
+	rm -f web/db/data.db web/db/data.db-wal web/db/data.db-shm

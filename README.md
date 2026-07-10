@@ -43,7 +43,7 @@ make dev                # http://localhost:3000
 ## 目录
 
 ```
-fund-rotation/
+cn-sector-flow-dashboard/
 ├── db/schema.sql                   # SQLite schema
 ├── ingest/                         # Python 抓数
 │   ├── pull_sectors.py             # 板块资金流（行业 + 概念）

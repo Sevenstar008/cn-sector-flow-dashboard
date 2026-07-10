@@ -17,12 +17,11 @@ function relative(ts: string): string {
 }
 
 export function UpdatedAt({ ts }: { ts: string }) {
-  const [now, setNow] = useState(() => Date.now());
+  const [, setTick] = useState(0);
   useEffect(() => {
-    const id = setInterval(() => setNow(Date.now()), 30_000);
+    const id = setInterval(() => setTick((n) => n + 1), 30_000);
     return () => clearInterval(id);
   }, []);
-  void now;
   const fresh = ts && Date.now() - new Date(ts).getTime() < 10 * 60 * 1000;
   return (
     <span className="inline-flex items-center gap-1.5 text-xs text-zinc-400">
