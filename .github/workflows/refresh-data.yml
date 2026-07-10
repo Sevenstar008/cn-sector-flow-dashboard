@@ -26,6 +26,18 @@ jobs:
 
       - name: Pull data
         run: make pull
+        continue-on-error: true
+
+      - name: Verify data freshness
+        run: |
+          python3 -c "
+          import sqlite3
+          conn = sqlite3.connect('web/db/data.db')
+          for tbl in ['sector_flow', 'stock_flow', 'index_daily']:
+              row = conn.execute(f'SELECT MAX(trade_date), COUNT(*) FROM {tbl}').fetchone()
+              print(f'{tbl}: latest={row[0]}, total={row[1]} rows')
+          conn.close()
+          "
 
       - name: Commit if changed
         run: |

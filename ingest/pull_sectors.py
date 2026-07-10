@@ -98,6 +98,7 @@ def main() -> int:
     trade_date = now.strftime("%Y-%m-%d")
 
     total = 0
+    errors = 0
     for sector_type in SECTOR_TYPES:
         for period in PERIODS:
             try:
@@ -107,7 +108,11 @@ def main() -> int:
                 total += n
             except Exception as e:
                 print(f"[err] {sector_type} / {period}: {e}", file=sys.stderr)
-    print(f"total upserted: {total}")
+                errors += 1
+    print(f"total upserted: {total} (errors: {errors})")
+    if total == 0:
+        print("WARNING: No data was fetched! Check API availability.", file=sys.stderr)
+        return 1
     return 0
 
 
