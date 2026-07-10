@@ -11,6 +11,9 @@ import sys
 import akshare as ak
 import pandas as pd
 
+from curl_patch import apply as apply_curl_patch
+apply_curl_patch()
+
 from db import connect, init_schema
 
 PERIODS = ["今日", "5日", "10日"]
