@@ -42,7 +42,7 @@ export async function GET() {
       info.sqliteError = "No data.db found in any candidate path";
       return NextResponse.json(info, { status: 500 });
     }
-    const db = new Database(foundPath, { readonly: true });
+    const db = new Database(`file:${foundPath}?immutable=1`, { readonly: true });
     const count = db.prepare("SELECT COUNT(*) as cnt FROM sector_flow").get();
     info.sqliteOk = true;
     info.sectorFlowCount = count;

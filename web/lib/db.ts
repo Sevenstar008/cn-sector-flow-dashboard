@@ -37,17 +37,9 @@ function open(): Database.Database {
       `SQLite file not found: ${dbPath} (cwd=${process.cwd()}, __dirname=${__dirname})`,
     );
   }
+  // The database file uses DELETE journal mode (not WAL), so no -wal / -shm
+  // sidecar files are needed. This works on Vercel's read-only filesystem.
   const db = new Database(dbPath, { readonly: true });
-  // Only set WAL in dev (writable filesystem). Vercel's serverless FS is
-  // read-only, so WAL would throw. readonly mode inherits the journal mode
-  // already baked into the file.
-  if (process.env.NODE_ENV !== "production") {
-    try {
-      db.pragma("journal_mode = WAL");
-    } catch {
-      // ignore — not critical for readonly access
-    }
-  }
   return db;
 }
 
