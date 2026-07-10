@@ -1,4 +1,5 @@
 import Database from "better-sqlite3";
+import fs from "node:fs";
 import path from "node:path";
 
 // In dev `npm run dev` cwd = web/. In Vercel build, rootDirectory = web/.
@@ -12,8 +13,21 @@ declare global {
 }
 
 function open(): Database.Database {
-  const db = new Database(DB_PATH, { readonly: true, fileMustExist: false });
-  db.pragma("journal_mode = WAL");
+  // data.db may not exist on first deploy before ingest runs.
+  if (!fs.existsSync(DB_PATH)) {
+    throw new Error(`SQLite file not found: ${DB_PATH}`);
+  }
+  const db = new Database(DB_PATH, { readonly: true });
+  // Only set WAL in dev (writable filesystem). Vercel's serverless FS is
+  // read-only, so WAL would throw. readonly mode inherits the journal mode
+  // already baked into the file.
+  if (process.env.NODE_ENV !== "production") {
+    try {
+      db.pragma("journal_mode = WAL");
+    } catch {
+      // ignore — not critical for readonly access
+    }
+  }
   return db;
 }
 
